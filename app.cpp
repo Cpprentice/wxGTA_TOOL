@@ -1,10 +1,11 @@
 #include "app.hpp"
+#include "loadingframe.hpp"
 
 IMPLEMENT_APP(App);
 
 bool App::OnInit() {
 
-	wxFrame* frame = new wxFrame(0, wxID_ANY, wxT("GTA SAMP Tool"));
+	LoadingFrame* frame = new LoadingFrame();
 	frame->Show();
 	return true;
 }

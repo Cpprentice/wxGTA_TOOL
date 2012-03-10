@@ -83,6 +83,10 @@
 			<Add library="libwsock32.a" />
 			<Add library="libodbc32.a" />
 		</Linker>
+		<Unit filename="app.cpp" />
+		<Unit filename="app.hpp" />
+		<Unit filename="loadingframe.cpp" />
+		<Unit filename="loadingframe.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

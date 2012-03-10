@@ -4,7 +4,8 @@
 #include <wx/wx.h>
 
 class App : public wxApp {
-	virtual bool OnInit();
+	public:
+		virtual bool OnInit();
 };
 
 #endif
