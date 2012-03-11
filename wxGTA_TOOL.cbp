@@ -89,8 +89,6 @@
 		<Unit filename="loadingframe.hpp" />
 		<Unit filename="loadingfunction.cpp" />
 		<Unit filename="loadingfunction.hpp" />
-		<Unit filename="resources\loadingbar.png" />
-		<Unit filename="resources\wallpaper.png" />
 		<Extensions>
 			<code_completion />
 			<debugger />

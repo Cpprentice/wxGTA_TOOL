@@ -22,6 +22,7 @@ LoadingFrame::LoadingFrame() : wxFrame(0, wxID_ANY, wxT("GTA SAMP Tool"), wxDefa
 
 	Connect(wxEVT_PAINT, wxPaintEventHandler(LoadingFrame::onPaint), 0, this);
 	Connect(wxEVT_TIMER, wxTimerEventHandler(LoadingFrame::onTimer), 0, this);
+
 	timer.SetOwner(this);
 
 	//wxAnimationCtrl* aniCtrl = new wxAnimationCtrl(this, wxID_ANY, animation);
@@ -43,20 +44,8 @@ LoadingFrame::~LoadingFrame() {
 
 void LoadingFrame::onPaint(wxPaintEvent& event) {
 	wxBufferedPaintDC dc(this);
-	static bool started = false;
-
-	if (started) {
-
-		dc.DrawBitmap(background.GetSubBitmap(wxRect(0, 460, 800, 140)), 0, 460, false);
-		dc.DrawBitmap(loadingBar, 0, 460, true);
-
-	}
-	else {
-		started = true;
-		dc.DrawBitmap(background, 0, 0, false);
-		dc.DrawBitmap(loadingBar, 0, 460, true);
-	}
-
+	dc.DrawBitmap(background, 0, 0, false);
+	dc.DrawBitmap(loadingBar, 0, 460, true);
 }
 
 void LoadingFrame::onTimer(wxTimerEvent& event) {
@@ -68,13 +57,13 @@ void LoadingFrame::onTimer(wxTimerEvent& event) {
 		//wxPaintEvent evt;
 		//ProcessEvent(evt);
 		//GetEventHandler()->AddPendingEvent(evt);
-		Refresh();
+		Refresh(false);
 	}
 	else {
 		loadingBar = wxBitmap(wxT("resources/loading_ani2.png"), wxBITMAP_TYPE_PNG);
 		//wxPaintEvent evt;
 		//ProcessEvent(evt);
-		Refresh();
+		Refresh(false);
 		startLoading();
 	}
 
@@ -93,6 +82,6 @@ void LoadingFrame::startLoading() {
 		currentTokens += functions[i]->getTokens();
 		//wxPaintEvent evt;
 		//ProcessEvent(evt);
-		Refresh();
+		Refresh(false);
 	}
 }
