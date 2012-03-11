@@ -2,6 +2,7 @@
 #define LOADINGFRAME_HPP
 
 #include <wx/wx.h>
+#include <wx/animate.h>
 #include <vector>
 #include "loadingfunction.hpp"
 
@@ -15,14 +16,22 @@ class LoadingFrame : public wxFrame {
 
 		void startLoading();
 
+
 	private:
 		void onPaint(wxPaintEvent& event);
+		void onTimer(wxTimerEvent& event);
+
+		wxTimer timer;
 
 		unsigned int totalTokens;
 		unsigned int currentTokens;
 		std::vector<LoadingFunction*> functions;
-		wxBitmap* background;
-		wxBitmap* bar;
+		wxBitmap background;
+		wxBitmap loadingBar;
+		wxAnimation animation;
+		bool loading;
+		int aniCounter;
+		int numAniBmps;
 };
 
 #endif
