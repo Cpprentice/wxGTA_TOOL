@@ -82,6 +82,7 @@
 			<Add library="libcomctl32.a" />
 			<Add library="libwsock32.a" />
 			<Add library="libodbc32.a" />
+			<Add library="libgdiplus.a" />
 		</Linker>
 		<Unit filename="app.cpp" />
 		<Unit filename="app.hpp" />
@@ -89,6 +90,8 @@
 		<Unit filename="loadingframe.hpp" />
 		<Unit filename="loadingfunction.cpp" />
 		<Unit filename="loadingfunction.hpp" />
+		<Unit filename="mainframe.cpp" />
+		<Unit filename="mainframe.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

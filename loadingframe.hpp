@@ -5,6 +5,7 @@
 #include <wx/animate.h>
 #include <vector>
 #include "loadingfunction.hpp"
+#include "mainframe.hpp"
 
 class LoadingFrame : public wxFrame {
 
@@ -12,14 +13,14 @@ class LoadingFrame : public wxFrame {
 		LoadingFrame();
 		~LoadingFrame();
 
-		void connectLoadingFunction(LoadingFunction* func);
-
-		void startLoading();
-
-
 	private:
 		void onPaint(wxPaintEvent& event);
 		void onTimer(wxTimerEvent& event);
+
+		void startLoading();
+
+		///Call this in Constructor
+		void connectLoadingFunction(LoadingFunction* func);
 
 		wxTimer timer;
 

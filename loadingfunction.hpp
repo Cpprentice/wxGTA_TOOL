@@ -9,4 +9,10 @@ class LoadingFunction {
 		unsigned int tokens;
 };
 
+class TimeWait : public LoadingFunction {
+	public:
+		TimeWait(unsigned int secs);
+		void handle();
+};
+
 #endif
