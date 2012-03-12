@@ -10,12 +10,16 @@
 class LoadingFrame : public wxFrame {
 
 	public:
-		LoadingFrame();
+		LoadingFrame(MainFrame* mainframe);
 		~LoadingFrame();
+
+		void receiveTokens(unsigned int number);
+		void triggerNext();
 
 	private:
 		void onPaint(wxPaintEvent& event);
 		void onTimer(wxTimerEvent& event);
+		void onClose(wxCloseEvent& event);
 
 		void startLoading();
 
@@ -33,6 +37,8 @@ class LoadingFrame : public wxFrame {
 		bool loading;
 		int aniCounter;
 		int numAniBmps;
+
+		MainFrame* mainframe;
 };
 
 #endif

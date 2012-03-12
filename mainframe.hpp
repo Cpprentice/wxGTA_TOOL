@@ -2,6 +2,7 @@
 #define MAINFRAME_HPP
 
 #include <wx/wx.h>
+#include "mappanel.hpp"
 
 class MainFrame : public wxFrame {
 
@@ -9,8 +10,10 @@ class MainFrame : public wxFrame {
 		MainFrame();
 		~MainFrame();
 
-	private:
+		MapPanel* getMapPanel();
 
+	private:
+		MapPanel* mapPanel;
 };
 
 #endif

@@ -5,7 +5,9 @@
 ///LoadingFrame
 
 
-LoadingFrame::LoadingFrame() : wxFrame(0, wxID_ANY, wxT("GTA SAMP Tool"), wxDefaultPosition, wxSize(800, 600), wxCLOSE_BOX | wxCAPTION | wxSYSTEM_MENU ) {
+LoadingFrame::LoadingFrame(MainFrame* mainframe) : wxFrame(0, wxID_ANY, wxT("GTA SAMP Tool"), wxDefaultPosition, wxDefaultSize, wxCLOSE_BOX | wxCAPTION | wxSYSTEM_MENU ) {
+
+	this->mainframe = mainframe;
 
 	SetClientSize(800, 600);
 	animation.LoadFile(wxT("resources/loading_ani_single.gif"), wxANIMATION_TYPE_GIF);
@@ -22,12 +24,13 @@ LoadingFrame::LoadingFrame() : wxFrame(0, wxID_ANY, wxT("GTA SAMP Tool"), wxDefa
 
 	Connect(wxEVT_PAINT, wxPaintEventHandler(LoadingFrame::onPaint), 0, this);
 	Connect(wxEVT_TIMER, wxTimerEventHandler(LoadingFrame::onTimer), 0, this);
-
-	TimeWait* t0 = new TimeWait(1);
-	TimeWait* t1 = new TimeWait(4);
-	TimeWait* t2 = new TimeWait(2);
-	TimeWait* t3 = new TimeWait(3);
-	TimeWait* t4 = new TimeWait(1);
+	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(LoadingFrame::onClose), 0, this);
+/*
+	TimeWait* t0 = new TimeWait(this, 1);
+	TimeWait* t1 = new TimeWait(this, 4);
+	TimeWait* t2 = new TimeWait(this, 2);
+	TimeWait* t3 = new TimeWait(this, 3);
+	TimeWait* t4 = new TimeWait(this, 1);
 
 
 	connectLoadingFunction(t0);
@@ -36,6 +39,9 @@ LoadingFrame::LoadingFrame() : wxFrame(0, wxID_ANY, wxT("GTA SAMP Tool"), wxDefa
 	connectLoadingFunction(t3);
 	connectLoadingFunction(t4);
 
+*/
+	MapCreator* mc = new MapCreator(this, mainframe->getMapPanel());
+	connectLoadingFunction(mc);
 
 	timer.SetOwner(this);
 	timer.Start(animation.GetDelay(0), wxTIMER_ONE_SHOT);
@@ -56,7 +62,11 @@ void LoadingFrame::onPaint(wxPaintEvent& event) {
 	dc.DrawBitmap(loadingBar, 0, 460, true);
 	if (loading) {
 
-		unsigned int width = (680 * currentTokens) / totalTokens;
+		unsigned int width = 680 * currentTokens;
+		if (totalTokens != 0)
+			width /= totalTokens;
+		else
+			width = 680;
 		wxGraphicsContext* gc = wxGraphicsContext::Create(dc);
 		if (width != 0) {
 			gc->SetBrush(gc->CreateLinearGradientBrush(0.0, 0.0, 1000.0, 80.0, wxColour(255,0,0,170), wxColour(0,255,0,170)));
@@ -66,20 +76,32 @@ void LoadingFrame::onPaint(wxPaintEvent& event) {
 	}
 }
 
+void LoadingFrame::onClose(wxCloseEvent& event) {
+	if (currentTokens != totalTokens && totalTokens != 0)
+		mainframe->Close();
+	event.Skip();
+}
+
 void LoadingFrame::onTimer(wxTimerEvent& event) {
 
 	if (loading) {
 		if (functions.size() > 0) {
-			functions[0]->handle();
-			currentTokens += functions[0]->getTokens();
-			Refresh(false);
-			functions.erase(functions.begin());
-			timer.Start(10, wxTIMER_ONE_SHOT);
+			if (functions[0]->isReady()) {
+				if (functions[0]->isFinished()) {
+					currentTokens += functions[0]->getTokens();
+					Refresh(false);
+					delete functions[0];
+					functions.erase(functions.begin());
+				}
+				if (functions.size() > 0)
+					functions[0]->handle();
+				timer.Start(10, wxTIMER_ONE_SHOT);
+			}
 		}
 		else {
+			//timer.Stop();
 			wxSleep(2);
-			MainFrame* frame = new MainFrame();
-			frame->Show();
+			mainframe->Show();
 
 			Close();
 		}
@@ -100,6 +122,18 @@ void LoadingFrame::onTimer(wxTimerEvent& event) {
 	}
 }
 
+void LoadingFrame::receiveTokens(unsigned int number) {
+
+	currentTokens += number;
+	Refresh(false);
+}
+
+void LoadingFrame::triggerNext() {
+	//timer.Start(10, wxTIMER_ONE_SHOT);
+	wxTimerEvent evt;
+	AddPendingEvent(evt);
+}
+
 void LoadingFrame::connectLoadingFunction(LoadingFunction* func) {
 	totalTokens += func->getTokens();
 	functions.push_back(func);
@@ -108,5 +142,5 @@ void LoadingFrame::connectLoadingFunction(LoadingFunction* func) {
 void LoadingFrame::startLoading() {
 
 	loading = true;
-	timer.Start(10, wxTIMER_ONE_SHOT);
+	timer.Start(50, wxTIMER_ONE_SHOT);
 }

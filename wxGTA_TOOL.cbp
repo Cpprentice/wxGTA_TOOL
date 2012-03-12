@@ -92,6 +92,8 @@
 		<Unit filename="loadingfunction.hpp" />
 		<Unit filename="mainframe.cpp" />
 		<Unit filename="mainframe.hpp" />
+		<Unit filename="mappanel.cpp" />
+		<Unit filename="mappanel.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
