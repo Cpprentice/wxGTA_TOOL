@@ -6,6 +6,8 @@
 #include <vector>
 #include "loadingfunction.hpp"
 #include "mainframe.hpp"
+#include <wx/zipstrm.h>
+#include <wx/wfstream.h>
 
 class LoadingFrame : public wxFrame {
 
@@ -14,7 +16,9 @@ class LoadingFrame : public wxFrame {
 		~LoadingFrame();
 
 		void receiveTokens(unsigned int number);
-		void triggerNext();
+		//void triggerNext();
+		wxZipInputStream* getZip();
+		bool openZipEntry(wxString name);
 
 	private:
 		void onPaint(wxPaintEvent& event);
@@ -39,6 +43,9 @@ class LoadingFrame : public wxFrame {
 		int numAniBmps;
 
 		MainFrame* mainframe;
+		wxFileInputStream* input;
+		wxZipInputStream* zip;
+		std::vector<wxZipEntry*> zipEntries;
 };
 
 #endif

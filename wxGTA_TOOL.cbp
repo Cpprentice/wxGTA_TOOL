@@ -94,6 +94,8 @@
 		<Unit filename="mainframe.hpp" />
 		<Unit filename="mappanel.cpp" />
 		<Unit filename="mappanel.hpp" />
+		<Unit filename="toolspanel.cpp" />
+		<Unit filename="toolspanel.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

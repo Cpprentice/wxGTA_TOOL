@@ -3,6 +3,7 @@
 
 #include <wx/wx.h>
 #include "mappanel.hpp"
+#include "toolspanel.hpp"
 
 class MainFrame : public wxFrame {
 
@@ -14,6 +15,7 @@ class MainFrame : public wxFrame {
 
 	private:
 		MapPanel* mapPanel;
+		ToolsPanel* toolsPanel;
 };
 
 #endif

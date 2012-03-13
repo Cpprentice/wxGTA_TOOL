@@ -95,25 +95,43 @@ void MapCreator::handle() {
 
 void MapCreator::onTimer() {
 
-	static wxImage basicMap(wxT("resources/gtasa_aerial_map_true.jpg"), wxBITMAP_TYPE_JPEG);
-	if (tokens == 20) {
-		//wxImage basicMap(wxT("resources/gtasa_aerial_map_true.jpg"), wxBITMAP_TYPE_JPEG);
+	static bool first = true;
+	wxImage basicMap;
+
+	if (first) {
+		parent->openZipEntry(wxT("gtasa_aerial_map_true.jpg"));
+		basicMap.LoadFile(*parent->getZip(), wxBITMAP_TYPE_JPEG);
+		first = false;
 		wxBitmap temp = basicMap;
-		panel->InitMapLevels(0, temp);
+		panel->InitMapLevels(4, temp);
 		returnTokens(4);
 	}
-	else if( tokens == 16) {
-		wxBitmap temp = basicMap.Scale(12000, 12000, wxIMAGE_QUALITY_NORMAL);
-		panel->InitMapLevels(1, temp);
-		returnTokens(12);
-	}
-	else if (tokens == 4) {
-		wxBitmap temp = basicMap.Scale(600, 600, wxIMAGE_QUALITY_HIGH);
-		panel->InitMapLevels(2, temp);
-		returnTokens(4);
-	}
-	else if (tokens == 0) {
-		finished = true;
+	else {
+		basicMap = panel->getBasicMap();
+
+		if( tokens == 16) {
+			wxBitmap temp = basicMap.Scale(600, 600, wxIMAGE_QUALITY_HIGH);
+			panel->InitMapLevels(0, temp);
+			returnTokens(8);
+		}
+		else if( tokens == 8) {
+			wxBitmap temp = basicMap.Scale(1060, 1060, wxIMAGE_QUALITY_HIGH);
+			panel->InitMapLevels(1, temp);
+			returnTokens(4);
+		}
+		else if (tokens == 4) {
+			wxBitmap temp = basicMap.Scale(1900, 1900, wxIMAGE_QUALITY_HIGH);
+			panel->InitMapLevels(2, temp);
+			returnTokens(2);
+		}
+		else if (tokens == 2) {
+			wxBitmap temp = basicMap.Scale(3370, 3370, wxIMAGE_QUALITY_HIGH);
+			panel->InitMapLevels(3, temp);
+			returnTokens(2);
+		}
+		else if (tokens == 0) {
+			finished = true;
+		}
 	}
 	ready = true;
 	//parent->triggerNext();

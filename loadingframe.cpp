@@ -5,7 +5,7 @@
 ///LoadingFrame
 
 
-LoadingFrame::LoadingFrame(MainFrame* mainframe) : wxFrame(0, wxID_ANY, wxT("GTA SAMP Tool"), wxDefaultPosition, wxDefaultSize, wxCLOSE_BOX | wxCAPTION | wxSYSTEM_MENU ) {
+LoadingFrame::LoadingFrame(MainFrame* mainframe) : wxFrame(0, wxID_ANY, wxT("GTA SAMP Tool"), wxDefaultPosition, wxDefaultSize, wxMINIMIZE_BOX | wxCLOSE_BOX | wxCAPTION | wxSYSTEM_MENU ) {
 
 	this->mainframe = mainframe;
 
@@ -25,6 +25,18 @@ LoadingFrame::LoadingFrame(MainFrame* mainframe) : wxFrame(0, wxID_ANY, wxT("GTA
 	Connect(wxEVT_PAINT, wxPaintEventHandler(LoadingFrame::onPaint), 0, this);
 	Connect(wxEVT_TIMER, wxTimerEventHandler(LoadingFrame::onTimer), 0, this);
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(LoadingFrame::onClose), 0, this);
+
+
+	input = new wxFileInputStream(wxT("res.samp"));
+	zip = new wxZipInputStream(input);
+
+	wxZipEntry* entry;
+	do {
+		entry = zip->GetNextEntry();
+		if (entry != NULL) zipEntries.push_back(entry);
+	} while( entry != NULL);
+
+
 /*
 	TimeWait* t0 = new TimeWait(this, 1);
 	TimeWait* t1 = new TimeWait(this, 4);
@@ -49,6 +61,13 @@ LoadingFrame::LoadingFrame(MainFrame* mainframe) : wxFrame(0, wxID_ANY, wxT("GTA
 
 LoadingFrame::~LoadingFrame() {
 
+	for (size_t i = 0; i < zipEntries.size(); i++) {
+		delete zipEntries[i];
+	}
+	zipEntries.clear();
+
+	delete zip;
+	//delete input;
 	timer.Stop();
 
 	Disconnect(wxEVT_PAINT, wxPaintEventHandler(LoadingFrame::onPaint), 0, this);
@@ -127,13 +146,13 @@ void LoadingFrame::receiveTokens(unsigned int number) {
 	currentTokens += number;
 	Refresh(false);
 }
-
+/*
 void LoadingFrame::triggerNext() {
 	//timer.Start(10, wxTIMER_ONE_SHOT);
 	wxTimerEvent evt;
 	AddPendingEvent(evt);
 }
-
+*/
 void LoadingFrame::connectLoadingFunction(LoadingFunction* func) {
 	totalTokens += func->getTokens();
 	functions.push_back(func);
@@ -143,4 +162,18 @@ void LoadingFrame::startLoading() {
 
 	loading = true;
 	timer.Start(50, wxTIMER_ONE_SHOT);
+}
+
+wxZipInputStream* LoadingFrame::getZip() {
+	return zip;
+}
+
+bool LoadingFrame::openZipEntry(wxString name) {
+	for (size_t i = 0; i < zipEntries.size(); i++) {
+		if (zipEntries[i]->GetInternalName() == name) {
+			zip->OpenEntry(*(zipEntries[i]));
+			return true;
+		}
+	}
+	return false;
 }
